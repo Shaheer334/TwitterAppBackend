@@ -13,14 +13,16 @@ var expiration_time = Date.now() + total_time_limit
 
 
 export const log_in = async (req, res) => {
-    // const { phone_number } = req.body
-    // i have to find contact of the existing user first, then do other jobs
     const { email } = req.body
     const { password } = req.body
     console.log(req.body)
     const user = await User.findOne({ email })
     if (!user) {
-        return res.send("Email not found")
+        return res.send({
+            code: res.sendStatus,
+            data: { msg: "Email not found" },
+            success: false
+        })
     } else {
         if (user && bcrypt.compareSync(password, user.password)) {
             const phone_number = user.phone_number
@@ -43,7 +45,11 @@ export const log_in = async (req, res) => {
                 success: true
             })
         }
-        return res.send({ msg: 'your password is incorrect' })
+        return res.send({
+            code: res.sendStatus,
+            data: { msg: 'your password is incorrect' },
+            success: false
+        })
     }
 }
 
@@ -59,7 +65,6 @@ export const verifyOTP = async (req, res) => {
                 success: false,
             })
         }
-
         let data = `${phone_number}.${otp}.${expiration_time}`
         let new_hashed_value = crypto.createHmac('sha256', process.env.OTP_SECRET_KEY_LOGIN).update(data).digest('hex')
 
@@ -90,11 +95,11 @@ export const verifyOTP = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
         res.status(400).send({
             code: res.sendStatus,
-            msg: 'something happening worse against the rules and regulationsssssssss!',
-            error: error.message
+            data: { msg: `something happening worse against the rules and regulationsssssssss! Error message: ${error}` },
+            success: false
         })
     }
 }
@@ -132,15 +137,6 @@ export const sign_up = async (req, res) => {
             })
         }
 
-        // const user = new User(req.body)
-        // user.password = bcrypt.hashSync(req.body.password, 10)
-        // // await user.save()
-        // return res.send({
-        //     code: res.sendStatus,
-        //     msg: 'user has been created',
-        //     success: true,
-        //     data: { username: req.body.name }
-        // })
     } catch (error) {
         return res.status(400).send({
             code: res.sendStatus,
@@ -165,8 +161,6 @@ export const verifyOTP_sign_in = async (req, res) => {
             const data = `${email}.${otp}.${expiration_time}`
             const newly_get_hashed_value = crypto.createHmac('sha256', process.env.OTP_SECRET_KEY_SIGN_IN).update(data).digest('hex')
             if (hash === newly_get_hashed_value) {
-                // const user = await User.findOne({ email: email })
-                
                 const user = new User({
                     name,
                     email,
