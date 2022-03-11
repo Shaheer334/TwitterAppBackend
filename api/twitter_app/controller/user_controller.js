@@ -29,8 +29,8 @@ export const log_in = async (req, res) => {
             const hashed_finally = `${hash}.${expiration_time}`
             console.log("haaaaaaaaaaaaaaaaaasssssssssssshhhhhhhhhhhhh!!!!!", hashed_finally)
             //send otp
-            sendSMS(phone_number, otp, user)
-            send_sms_email(email, otp, user)
+            sendSMS(phone_number, otp, user.name)
+            send_sms_email(email, otp, user.name)
 
             return res.send({
                 code: res.sendStatus,
