@@ -13,9 +13,7 @@ var expiration_time = Date.now() + total_time_limit
 
 
 export const log_in = async (req, res) => {
-    const { email } = req.body
-    const { password } = req.body
-    console.log(req.body)
+    const { email, password } = req.body
     const user = await User.findOne({ email })
     if (!user) {
         return res.send({
