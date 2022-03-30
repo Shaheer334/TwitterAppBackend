@@ -13,7 +13,7 @@ const sendSMS = (number, code, user) => {
     client.messages
         .create({
             body: `[TWITTER APP]
-            Hi ${user.name} use this ${code} code. This code will expires in 10 minutes. Please keep this confidential`,
+            Hi ${user} use this ${code} code. This code will expires in 10 minutes. Please keep this confidential`,
             from: "+19108123413",
             to: number
         })
