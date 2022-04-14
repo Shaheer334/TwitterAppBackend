@@ -65,7 +65,6 @@ export const verifyOTP = async (req, res) => {
         }
         let data = `${phone_number}.${otp}.${expiration_time}`
         let new_hashed_value = crypto.createHmac('sha256', process.env.OTP_SECRET_KEY_LOGIN).update(data).digest('hex')
-
         if (new_hashed_value === hash) {
             const user = await User.findOne({ phone_number: phone_number })
             if (user) {
